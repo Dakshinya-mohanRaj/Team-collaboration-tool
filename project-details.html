@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="TASKFLOW — Project Details" />
+  <title>Project · TASKFLOW</title>
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="css/components.css" />
+  <link rel="stylesheet" href="css/dashboard.css" />
+  <link rel="stylesheet" href="css/responsive.css" />
+</head>
+<body>
+  <div id="view">
+    <div class="empty-state" id="project-not-found" hidden>
+      <div class="empty-state__icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
+      </div>
+      <h3>Project not found</h3>
+      <p>The project you're looking for may have been deleted.</p>
+      <a href="projects.html" class="btn btn--primary mt-3">Back to Projects</a>
+    </div>
+
+    <div id="project-content" hidden>
+      <div class="content-head">
+        <div class="project-detail-head">
+          <span class="project-detail-head__icon" id="pd-icon">TF</span>
+          <div>
+            <h1 class="content-head__title" id="pd-title">—</h1>
+            <p class="content-head__sub" id="pd-desc">—</p>
+          </div>
+        </div>
+        <div class="flex gap-2 wrap">
+          <button type="button" class="btn btn--primary" id="pd-new-task">+ New Task</button>
+          <button type="button" class="btn btn--ghost" id="pd-edit">Edit Project</button>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="flex gap-4 wrap align-center" style="justify-content:space-between">
+          <div class="flex gap-3 align-center wrap">
+            <span class="pill" id="pd-manager">Manager —</span>
+            <span class="pill" id="pd-deadline">Deadline —</span>
+            <div class="avatar-row" id="pd-members"></div>
+          </div>
+        </div>
+        <div class="mt-4">
+          <div class="flex gap-3 align-center mb-2">
+            <strong class="small">Progress</strong>
+            <span class="small muted" id="pd-progress-text">0%</span>
+          </div>
+          <div class="progress">
+            <div class="progress__bar" id="pd-progress-bar" style="width:0%"></div>
+          </div>
+        </div>
+        <div class="project-detail-stats mt-4">
+          <div class="mini-stat"><div class="mini-stat__value" id="pd-total">0</div><div class="mini-stat__label">Total Tasks</div></div>
+          <div class="mini-stat"><div class="mini-stat__value" id="pd-completed">0</div><div class="mini-stat__label">Completed</div></div>
+          <div class="mini-stat"><div class="mini-stat__value" id="pd-inprogress">0</div><div class="mini-stat__label">In Progress</div></div>
+          <div class="mini-stat"><div class="mini-stat__value" id="pd-overdue">0</div><div class="mini-stat__label">Overdue</div></div>
+        </div>
+      </div>
+
+      <section>
+        <h2 class="section__title mb-3">Kanban Board</h2>
+        <p class="small muted mb-3">Drag a task card between columns to update its status.</p>
+        <div class="kanban" id="kanban" role="application" aria-label="Task kanban board"></div>
+      </section>
+    </div>
+  </div>
+
+  <script src="js/storage.js"></script>
+  <script src="js/data.js"></script>
+  <script src="js/utils.js"></script>
+  <script src="js/app.js"></script>
+  <script src="js/forms.js"></script>
+  <script src="js/project-details.js"></script>
+</body>
+</html>
