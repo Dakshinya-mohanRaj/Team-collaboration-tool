@@ -11,8 +11,8 @@
 
   let searchTerm = "";
 
-  function init() {
-    const user = App.init("projects");
+  async function init() {
+    const user = await App.init("projects");
     if (!user) return;
 
     document.getElementById("new-project-btn").addEventListener("click", openNew);

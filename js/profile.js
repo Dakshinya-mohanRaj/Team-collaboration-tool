@@ -9,8 +9,8 @@
   const ST = () => window.TFStorage;
   const U = () => window.Utils;
 
-  function init() {
-    const user = App.init("profile");
+  async function init() {
+    const user = await App.init("profile");
     if (!user) return;
     render(user);
 

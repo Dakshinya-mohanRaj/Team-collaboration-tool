@@ -14,8 +14,8 @@
   let viewMonth = new Date().getMonth();
   let selectedDate = U().todayISO();
 
-  function init() {
-    const user = App.init("calendar");
+  async function init() {
+    const user = await App.init("calendar");
     if (!user) return;
 
     document.getElementById("cal-prev").addEventListener("click", () => {

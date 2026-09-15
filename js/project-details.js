@@ -12,8 +12,8 @@
   const COLUMNS = ["To Do", "In Progress", "Review", "Completed"];
   let projectId = null;
 
-  function init() {
-    const user = App.init("project-details");
+  async function init() {
+    const user = await App.init("project-details");
     if (!user) return;
 
     const params = new URLSearchParams(window.location.search);

@@ -44,33 +44,26 @@
     page: null,
 
     /**
-     * Seed demo data if storage is empty and store current user.
-     * Returns the user object or null.
+     * Hydrate the shared data cache from the backend and build the shell.
+     * Returns a promise resolving to the current user (or null).
      */
-    init(page) {
+    async init(page) {
       this.page = page || "dashboard";
 
-      // 1. Seed the "database"
-      if (!ST().get("users", null)) ST().set("users", DemoData.users());
-      if (!ST().get("projects", null)) ST().set("projects", DemoData.projects());
-      if (!ST().get("tasks", null)) ST().set("tasks", DemoData.tasks());
-      if (!ST().get("notifications", null)) ST().set("notifications", DemoData.notifications());
-      if (!ST().get("settings", null)) ST().set("settings", DemoData.settings());
+      const publicPage = this.page === "login";
+
+      // 1. Hydrate the data cache from the REST API.
+      const auth = await ST().bootstrap();
 
       this.settings = ST().get("settings", {});
       this.applySettings();
 
       // 2. Auth check — index.html is public.
-      const publicPage = this.page === "login";
-      const rawUser = ST().get("currentUser", null);
-      this.currentUser = this.findUser(rawUser && rawUser.id);
+      this.currentUser = auth.user ? this.findUser(auth.user.id) || auth.user : null;
 
       if (!publicPage && !this.currentUser) {
         window.location.replace("index.html");
         return null;
-      }
-      if (publicPage && this.currentUser) {
-        // stay — login page can still run, but we won't auto-redirect here
       }
 
       // 3. Build shell for authed pages
@@ -91,24 +84,37 @@
     /* ---------------- Auth ---------------- */
 
     login(email, password) {
-      const users = ST().get("users", []);
-      const found = users.find(
-        (u) => u.email.toLowerCase() === String(email).toLowerCase()
-      );
-      if (!found) return { ok: false, error: "Email not found." };
-      if (!password) return { ok: false, error: "Password required." };
-      if (found.password && found.password !== password) {
-        return { ok: false, error: "Incorrect password." };
-      }
-      ST().set("currentUser", { id: found.id });
-      return { ok: true, user: found };
+      return fetch("/api/auth/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "same-origin",
+        body: JSON.stringify({ email: email, password: password }),
+      })
+        .then((res) =>
+          res.json().then((data) => ({ res: res, data: data }))
+        )
+        .then(({ res, data }) => {
+          if (!res.ok) {
+            return { ok: false, error: data.error || "Login failed." };
+          }
+          ST().setLocal("currentUser", data.user);
+          return { ok: true, user: data.user };
+        })
+        .catch(() => ({ ok: false, error: "Cannot reach the server." }));
     },
 
     loginDemo() {
-      const users = ST().get("users", []);
-      const demo = users.find((u) => u.id === "user_001") || users[0];
-      if (demo) ST().set("currentUser", { id: demo.id });
-      return demo || null;
+      return fetch("/api/auth/demo", {
+        method: "POST",
+        credentials: "same-origin",
+      })
+        .then((res) => (res.ok ? res.json() : ({ user: null })))
+        .then((data) => {
+          if (!data || !data.user) return null;
+          ST().setLocal("currentUser", data.user);
+          return data.user;
+        })
+        .catch(() => null);
     },
 
     loginDemoNamed() {
@@ -116,7 +122,11 @@
     },
 
     logout() {
-      ST().remove("currentUser");
+      ST().clear();
+      fetch("/api/auth/logout", {
+        method: "POST",
+        credentials: "same-origin",
+      }).catch(() => {});
       window.location.href = "index.html";
     },
 

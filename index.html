@@ -79,7 +79,6 @@
   </div>
 
   <script src="js/storage.js"></script>
-  <script src="js/data.js"></script>
   <script src="js/utils.js"></script>
   <script src="js/app.js"></script>
   <script>
@@ -121,28 +120,30 @@
           return;
         }
 
-        var result = App.login(email, password);
-        if (result.ok) {
-          Utils.toast("Welcome back, " + result.user.name + "!", "success");
-          setTimeout(function () {
-            go("dashboard.html");
-          }, 400);
-        } else {
-          showError(result.error);
-        }
+        App.login(email, password).then(function (result) {
+          if (result.ok) {
+            Utils.toast("Welcome back, " + result.user.name + "!", "success");
+            setTimeout(function () {
+              go("dashboard.html");
+            }, 400);
+          } else {
+            showError(result.error);
+          }
+        });
       });
 
       demoBtn.addEventListener("click", function () {
         clearError();
-        var user = App.loginDemoNamed();
-        if (user) {
-          Utils.toast("Signed in as " + user.name, "success");
-          setTimeout(function () {
-            go("dashboard.html");
-          }, 400);
-        } else {
-          showError("Demo data could not be loaded.");
-        }
+        App.loginDemoNamed().then(function (user) {
+          if (user) {
+            Utils.toast("Signed in as " + user.name, "success");
+            setTimeout(function () {
+              go("dashboard.html");
+            }, 400);
+          } else {
+            showError("Demo data could not be loaded.");
+          }
+        });
       });
     })();
   </script>

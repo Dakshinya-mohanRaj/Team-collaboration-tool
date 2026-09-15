@@ -18,8 +18,8 @@
     due: "",
   };
 
-  function init() {
-    const user = App.init("tasks");
+  async function init() {
+    const user = await App.init("tasks");
     if (!user) return;
 
     document.getElementById("empty-new-task").addEventListener("click", openNew);

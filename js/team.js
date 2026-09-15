@@ -12,8 +12,8 @@
   let searchTerm = "";
   let roleFilter = "";
 
-  function init() {
-    const user = App.init("team");
+  async function init() {
+    const user = await App.init("team");
     if (!user) return;
 
     document.getElementById("new-member-btn").addEventListener("click", openNew);

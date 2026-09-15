@@ -1,0 +1,24 @@
+{
+  "name": "taskflow",
+  "version": "2.0.0",
+  "description": "TASKFLOW — Team Collaboration & Task Management (Express + SQLite backend)",
+  "main": "server/index.js",
+  "scripts": {
+    "start": "node server/index.js",
+    "dev": "node --watch server/index.js"
+  },
+  "keywords": [
+    "taskflow",
+    "task-management",
+    "project-management",
+    "sqlite",
+    "express"
+  ],
+  "license": "MIT",
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "better-sqlite3": "^12.2.0",
+    "cookie-parser": "^1.4.7",
+    "express": "^4.21.2"
+  }
+}

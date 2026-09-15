@@ -9,8 +9,8 @@
   const ST = () => window.TFStorage;
   const U = () => window.Utils;
 
-  function init() {
-    const user = App.init("settings");
+  async function init() {
+    const user = await App.init("settings");
     if (!user) return;
 
     loadValues();
@@ -49,13 +49,17 @@
         { title: "Reset demo data", confirmLabel: "Reset Data" }
       );
       if (!ok) return;
-      ST().set("users", DemoData.users());
-      ST().set("projects", DemoData.projects());
-      ST().set("tasks", DemoData.tasks());
-      ST().set("notifications", DemoData.notifications());
-      ST().set("settings", DemoData.settings());
-      U().toast("Demo data restored");
-      location.href = "dashboard.html";
+      try {
+        await fetch("/api/reset", {
+          method: "POST",
+          credentials: "same-origin",
+        });
+        await ST().bootstrap();
+        U().toast("Demo data restored");
+        location.href = "dashboard.html";
+      } catch (err) {
+        U().toast("Could not reset data. Please try again.", "error");
+      }
     });
   }
 
